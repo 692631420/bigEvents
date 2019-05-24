@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -50,6 +51,25 @@
 
     <div class="main" id="main_body">
         <iframe src="main_count.html" frameborder="0" id="main_frame" name="main_frame" frameborder="0" scrolling="auto"></iframe>
+    </div>
+
+    <!-- 弹框Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">提示框</h4>
+                </div>
+                <div class="modal-body">
+                    你确认要离开吗？
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">好心留下</button>
+                    <button type="button" class="btn btn-primary btn-leave">残忍离开</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -109,3 +129,25 @@
 </body>
 
 </html>
+
+<script>
+    // 点击的时候，给客户一个弹框，询问客户是否图片，如果点击确认图片，回到登录页面
+    // https://autumnfish.cn/big/admin/logout
+    $(function() {
+        $(".icon-tuichu").parent().click(function() {
+            $("#myModal").modal();
+        });
+
+        $(".btn-leave").click(function() {
+            $.ajax({
+                url: "https://autumnfish.cn/big/admin/logout",
+                type: "post",
+                success: function(ajaxData) {
+                    if (ajaxData.code == 200) {
+                        window.location.href = "./login.html";
+                    }
+                }
+            });
+        })
+    });
+</script>

@@ -36,7 +36,7 @@
 
 
     <!-- 动态的弹框Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -48,7 +48,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">残忍关闭</button>
-                    <button type="button" class="btn btn-default  btn-savexiugai">保存修改</button>
+                    <button type="button" class="btn btn-primary">保存修改</button>
                 </div>
             </div>
         </div>
@@ -76,6 +76,7 @@
         $(".input_sub").click(function(e) {
 
             e.preventDefault();
+            $("#myModal").removeClass("in");
 
             var username = $(".input_txt").val().trim();
             var password = $(".input_pass").val().trim();
