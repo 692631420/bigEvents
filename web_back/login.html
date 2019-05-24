@@ -9,6 +9,9 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -29,8 +32,88 @@
             </form>
         </div>
 
-    </div> 
+    </div>
+
+
+    <!-- 动态的弹框Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">提示框</h4>
+                </div>
+                <div class="modal-body my-modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">残忍关闭</button>
+                    <button type="button" class="btn btn-default  btn-savexiugai">保存修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 
 </html>
+
+<script>
+    // 点击搜索，获取输入的用户名跟密码，如果为空，提示，不为空
+    // 跟服务器请求数据，如果返回值为400 则提示输入错误，返回值为200，提醒用户输入成功，跳转到对应的页面去
+
+    // 接口的基础地址为 https://autumnfish.cn/big
+
+    // 请求地址： / admin / login
+    // 请求方式： post
+    // 请求参数：
+    //     user_name string 用户名（ admin）
+    //     password string 密码(123456)
+
+    $(function() {
+
+        // 后台登录接口代码
+        $(".input_sub").click(function(e) {
+
+            e.preventDefault();
+
+            var username = $(".input_txt").val().trim();
+            var password = $(".input_pass").val().trim();
+
+            if (username == "" || password == "") {
+                // alert("用户名或者密码不能为空");
+                $("#myModal").modal();
+                $(".my-modal-body").text("用户名或者密码不能为空");
+                return;
+            }
+
+            $.ajax({
+                url: "https://autumnfish.cn/big/admin/login",
+                type: "post",
+                data: {
+                    user_name: username,
+                    password: password
+                },
+                success: function(backData) {
+
+                    if (backData.code == 400) {
+                        // alert("用户名或密码错误");
+                        $("#myModal").modal();
+                        $(".my-modal-body").text("用户名或密码错误");
+                        $(".input_txt").val("");
+                        $(".input_pass").val("");
+                    } else if (backData.code == 200) {
+                        window.location.href = './index.html'
+                    }
+
+                }
+            });
+        })
+
+        $(".btn-savexiugai").click(function() {
+            $(this).css("backgroundColor", "white");
+            $(".modal-dialog").html("");
+
+        })
+    });
+</script>
