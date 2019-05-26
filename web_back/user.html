@@ -24,35 +24,35 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control username" id="inputEmail3" value="李思思">
+                        <input type="text" class="form-control username" id="inputEmail3" value="李思思" name="username">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control nickname" id="inputEmail3" value="思思">
+                        <input type="text" class="form-control nickname" id="inputEmail3" value="思思" name="nickname">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label ">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control email" id="inputEmail3" value="lisisi@126.com">
+                        <input type="text" class="form-control email" id="inputEmail3" value="lisisi@126.com" name="email">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
-                        <img src="images/2.jpg" alt="" class="user_pic">
+                        <img src="images/2.jpg" alt="" class="user_pic" id="tupian">
                         <label for="exampleInputFile">光标定位</label>
-                        <input type="file" id="exampleInputFile" class="user_pic" style="height: 25px;">
+                        <input type="file" id="exampleInputFile" style="height: 25px;" name="user-pic">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
                     <div class="col-sm-4">
-                        <input type="password" class="form-control password" id="inputEmail3" value="12345678">
+                        <input type="password" class="form-control password" id="inputEmail3" value="12345678" name="password">
                     </div>
                 </div>
 
@@ -67,43 +67,75 @@
     </div>
 
     <script>
-        // 获取个人中心的信息
         $(function() {
+
+            // 获取个人中心的信息
             // 请求地址： https: //autumnfish.cn/big/admin/userinfo_get
             // 请求方式： get
             // 请求参数： 无
-            $.ajax({
-                url: "https://autumnfish.cn/big/admin/userinfo_get",
-                type: "get",
-                success: function(backData) {
-                    // console.log(backData);
-                    for (var key in backData.data) {
-                        $("." + key).val(backData.data[key]);
+            function personMessage() {
+                $.ajax({
+                    url: "https://autumnfish.cn/big/admin/userinfo_get",
+                    type: "get",
+                    success: function(backData) {
+
+                        // console.log(backData);
+                        for (var key in backData.data) {
+                            $("input." + key).val(backData.data[key]);
+
+                        }
+
+                        $('#tupian').attr('src', backData.data.user_pic);
+
                     }
-                }
-            });
+                });
 
-            // 文件上传更改
-            $("#exampleInputFile").change(function() {
-                // console.log(111);
-                var file = this.files[0];
-                // 把文件转换成url
-                var url = URL.createObjectURL(file);
-                $(".user_pic").attr("src", url);
-            });
+                // 文件上传更改
+                $("#exampleInputFile").change(function() {
+                    // console.log(111);
+                    var file = this.files[0];
+                    // 把文件转换成url
+                    var url = URL.createObjectURL(file);
+                    $(".user_pic").attr("src", url);
+                });
 
 
-            // 优化文件上传
-            // 隐藏文件
-            $("#exampleInputFile").hide();
+                // 优化文件上传
+                // 隐藏文件
+                $("#exampleInputFile").hide();
+            }
+
+            // 默认调用个人信息
+            personMessage();
 
             // 修改个人信息功能
-            //请求地址：https://autumnfish.cn/big/admin/userinfo_edit
+            // 请求地址：https://autumnfish.cn/big/admin/userinfo_edit
             // 请求方式：post
             // 请求参数：使用formdata提交
-            // $(".btn-success").click(function() {
+            $(".btn-success").click(function(e) {
+                e.preventDefault();
+                // console.log(111);
+                // 实例化的formdata是一个Dom对象
+                var formdata = new FormData($(".article_form")[0]);
+                // console.log(formdata);
 
-            // });
+                // formdata需要给input表单设置name的值，这样才能通过实例化的formdata对象获取表单的value值
+                $.ajax({
+                    url: "https://autumnfish.cn/big/admin/userinfo_edit",
+                    type: "post",
+                    data: formdata,
+                    contentType: false,
+                    processData: false,
+                    success: function(jsoData) {
+
+                        if (jsoData.code == 200) {
+                            personMessage();
+                        }
+
+                    }
+                });
+
+            });
         });
     </script>
 
