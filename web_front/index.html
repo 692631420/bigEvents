@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <script src="./js/jquery-1.12.4.min.js"></script>
 </head>
 
 <body>
@@ -215,12 +216,56 @@
             <span>|</span>
             <a href="#">招聘人才</a>
             <span>|</span>
-            <a href="#">友情链接</a>		
+            <a href="#">友情链接</a>
         </div>
-        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司   All Rights Reserved</p>
-        <p>电话：0755-****888    粤ICP备*******8号</p>
+        <p>CopyRight © 2019 深圳大事件信息技术股份有限公司 All Rights Reserved</p>
+        <p>电话：0755-****888 粤ICP备*******8号</p>
     </div>
 
+
+    <script src="./js/template-web.js"></script>
+    <!-- 定义首页五张图片的模板引擎 -->
+    <script id="banner" type="text/html">
+        {{each data}} {{if $index==0}}
+        <li class="first">
+            {{else}}
+            <li>
+                {{/if}}
+                <a href="./article.html?id={{$value.id}}"><img src="{{$value.cover}}" alt=""></a>
+                <p>{{$value.title}}</p>
+            </li>
+            {{/each}}
+
+    </script>
+
+
+
+
+    <script>
+        // 1、页面一进来，就获取页面的数据
+        // 请求地址：http://localhost:8000/admin/search
+        // 请求方式： get
+        // 请求参数： page, perpage
+
+        $(function() {
+            $.ajax({
+                url: 'http://localhost:8000/admin/search',
+                type: "get",
+                data: {
+                    page: 1,
+                    perpage: 5
+
+                },
+                success: function(backData) {
+                    console.log(backData);
+                    var picMuban = template("banner", backData);
+                    $(".focus_list").html(picMuban);
+                    console.log(111);
+
+                }
+            })
+        });
+    </script>
 </body>
 
 </html>
