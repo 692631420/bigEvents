@@ -100,7 +100,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <input type="text" name="id" id="id">
+                        <input type="hidden" name="id" id="id">
 
                         <div class="form-group">
                             <label for="recipient-name" class="control-label">分类名称:</label>
@@ -181,18 +181,20 @@
 
                 if ($(this).hasClass("btn-success")) {
 
-                    var name = $("input[name='name']").val();
-                    var id = $("input[name='id']").val();
-                    var slug = $("input[name='slug']").val();
+                    // 等同于下面的$().serialize()方法--获取表单中name属性的value值，返回结果是键值对的字符串
+                    // var name = $("input[name='name']").val();
+                    // var id = $("input[name='id']").val();
+                    // var slug = $("input[name='slug']").val();
 
                     $.ajax({
                         url: "http://localhost:8000/admin/category_edit",
                         type: "post",
-                        data: {
-                            id: id,
-                            name: name,
-                            slug: slug
-                        },
+                        // data: {
+                        //     id: id,
+                        //     name: name,
+                        //     slug: slug
+                        // },
+                        data: $("form").serialize(),
                         success: function(backData) {
                             // console.log(backData);
                             if (backData.code == 200) {
@@ -223,13 +225,16 @@
                                 console.log("请输入不同的用户名跟昵称");
 
                             }
+                            var username = $(".username").val("");
+                            var userslug = $(".userslug").val("");
+
                         }
                     })
 
                 }
 
                 // 关闭模态框
-                $(".modal-content").modal('hide');
+                $('#addModal').modal('hide');
 
 
             });

@@ -341,7 +341,7 @@
                         state: $("#selStatus").val()
                     },
                     success: function(backData) {
-                        // console.log(backData);
+                        console.log(backData);
                         // 对数据用模板引擎进行拼接一下
                         var pageMuban = template("data", backData);
                         $("tbody").html(pageMuban);
