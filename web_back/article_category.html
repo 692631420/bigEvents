@@ -267,23 +267,23 @@
 
             // 获取编辑页面的表单数据，并且修改编辑表单的样式，如果点击确认编辑（拥有btn-class类),向服务器请求数据，否则新增内容
 
-            window.editTr = function(data) {
-                console.log(data);
-                // 获取页面的数据，展示到弹框中
-                // $(".username").val(data.name);
-                // $("input#id").val(data.id);
-                // $(".userslug").val(data.slug);
-                for (var key in data) {
-                    $("input[name=" + key + "]").val(data[key]);
-                }
+            // window.editTr = function(data) {
+            //     console.log(data);
+            //     // 获取页面的数据，展示到弹框中
+            //     // $(".username").val(data.name);
+            //     // $("input#id").val(data.id);
+            //     // $(".userslug").val(data.slug);
+            //     for (var key in data) {
+            //         $("input[name=" + key + "]").val(data[key]);
+            //     }
 
-                // 新增分类跟编辑公用一个弹框，所以需要用样式去区分他们
-                $(".modal-title").text("编辑的内容");
-                $("#model_add").addClass("btn-success").text("修改");
+            //     // 新增分类跟编辑公用一个弹框，所以需要用样式去区分他们
+            //     $(".modal-title").text("编辑的内容");
+            //     $("#model_add").addClass("btn-success").text("修改");
 
-                // console.log($("#model_add").hasClass('btn-success'));
+            //     // console.log($("#model_add").hasClass('btn-success'));
 
-            };
+            // };
 
             $(".add-btn").click(function() {
                 $(".modal-title").text("新增的内容");

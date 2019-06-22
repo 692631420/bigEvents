@@ -35,7 +35,7 @@
                     </form>
                 </div>
                 <div class="col-xs-6">
-                    <a href="article_release.html" class="btn btn-success btn-sm pull-right" id="release_btn">发表文章</a>
+                    <a href="article_release.html" class="btn btn-success btn-sm pull-right btn-public" id="release_btn">发表文章</a>
                 </div>
             </div>
 
@@ -55,16 +55,11 @@
 
 
                     <tr>
-
                         <td>王积千造统最头</td>
                         <td>杰克</td>
                         <td>奇趣事</td>
                         <td class="text-center">2017-06-08 07:08:46</td>
-
-
                         <td class="text-center">已发布</td>
-
-
                         <td class="text-center">
                             <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
                             <a href="javascript:deleteTr( 1005 );" class="btn btn-danger btn-xs">删除</a>
@@ -274,7 +269,7 @@
     </script>
 
     <!-- 定义页面一打开的数据的模板引擎 -->
-    <script id="data" type="text/html">
+    <script id="data1" type="text/html">
         {{each data}}
         <tr>
             <td>{{$value.title}}</td>
@@ -283,14 +278,12 @@
             <td class="text-center">{{$value.date}}</td>
             <td class="text-center">{{$value.state}}</td>
             <td class="text-center">
-                <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
-                <a href="javascript:deleteTr({{$value.id}});" class="btn btn-danger btn-xs">删除</a>
+                <a href="./article_edit.html?id={{$value.id}}" class="btn btn-default btn-xs ">编辑</a>
+                <a href="javascript:deleteTr({{$value.id}}); " class="btn btn-danger btn-xs ">删除</a>
             </td>
         </tr>
         {{/each}}
     </script>
-
-
 
     <script>
         // 设置左侧菜单
@@ -319,18 +312,13 @@
 
 
         $(function() {
-
             // 1、搜索文章，并且加载到页面中
             var Mypage = 1;
-            var perpage = 10;
+            var perpage = 15;
             var MytotalPages = 20;
-
 
             // 1、页面一打开刷新数据
             function referData() {
-                // console.log($("#selCategory").val());
-                // console.log($("#selStatus").val());
-
                 $.ajax({
                     url: "http://localhost:8000/admin/search",
                     type: "get",
@@ -342,39 +330,58 @@
                     },
                     success: function(backData) {
                         console.log(backData);
+
                         // 对数据用模板引擎进行拼接一下
-                        var pageMuban = template("data", backData);
+                        var pageMuban = template("data1", backData);
                         $("tbody").html(pageMuban);
+
 
                         // 分页总页数请求的数据
                         // totalPages服务器获取的总页数
-                        var totalPages = backData.totalPage;
-                        // MytotalPages--自己定义的总页数的变量, 下面的396行记得改下总页数数量
-                        if (MytotalPages != totalPages) {
-                            MytotalPages = totalPages;
-                            $pagination.twbsPagination('destroy');
-                            $pagination.twbsPagination($.extend({}, defaultOpts, {
-                                // 直接让每次刷新获取搜索的页面为第一页
-                                startPage: 1,
-                                totalPages: totalPages
-                            }));
-                        }
+                        // var totalPages = backData.totalPage;
+                        // console.log(totalPages);
+
+                        // // MytotalPages--自己定义的总页数的变量, 下面的396行记得改下总页数数量
+                        // if (MytotalPages != totalPages) {
+                        //     MytotalPages = totalPages;
+                        //     $('.pagination').twbsPagination('destroy');
+                        //     $('.pagination').twbsPagination($.extend({}, defaultOpts, {
+                        //         // 直接让每次刷新获取搜索的页面为第一页
+                        //         startPage: 1,
+                        //         totalPages: totalPages
+                        //     }));
+                        // }
                     }
+
                 })
             }
 
             // 默认调用一次
             referData();
 
-
             //3、 页码插件的jq效果
+            // var defaultOpts = {
+            //         totalPages: MytotalPages, //总页数
+            //         visiblePages: 7, //每页显示的条数
+            //         first: "首页 ",
+            //         last: "尾页 ",
+            //         prev: "上一页 ",
+            //         next: "下一页 ",
+            //         onPageClick: function(event, page) {
+            //             // console.log(page); //当前页数
+            //             Mypage = page;
+            //             referData();
+            //         }
+            //     }
+            // 设置分页的总页数
+
             // $('.pagination').twbsPagination({
-            //     totalPages: 35, //总页数
+            //     totalPages: MytotalPages, //总页数
             //     visiblePages: 7, //每页显示的条数
-            //     first: "首页",
-            //     last: "尾页",
-            //     prev: "上一页",
-            //     next: "下一页",
+            //     first: "首页 ",
+            //     last: "尾页 ",
+            //     prev: "上一页 ",
+            //     next: "下一页 ",
             //     onPageClick: function(event, page) {
             //         // console.log(page); //当前页数
             //         Mypage = page;
@@ -382,31 +389,11 @@
             //     }
             // });
 
-            // 设置分页的总页数
-            var $pagination = $('.pagination');
-
-            var defaultOpts = {
-                totalPages: MytotalPages, //总页数
-                visiblePages: 7, //每页显示的条数
-                first: "首页",
-                last: "尾页",
-                prev: "上一页",
-                next: "下一页",
-                onPageClick: function(event, page) {
-                    // console.log(page); //当前页数
-                    Mypage = page;
-                    referData();
-                }
-            }
-
-            $pagination.twbsPagination(defaultOpts);
-            // $('.pagination').twbsPagination({对象作为参数})
-            // 上面是三行代码，一行代码也可以实现  
 
 
             // 2、请求文章所有分类的数据
             $.ajax({
-                url: "http://localhost:8000/admin/category_search",
+                url: "http://localhost:8000/admin/category_search ",
                 type: "get",
                 success: function(backData) {
                     // console.log(backData);
@@ -427,7 +414,10 @@
             // 5、点击删除
             //请求地址： http://localhost:8000/admin/article_delete
             // 请求方式： get
+
+
             window.deleteTr = function(id) {
+                // console.log(id);
                 $.ajax({
                     url: "http://localhost:8000/admin/article_delete",
                     type: "get",
@@ -435,17 +425,17 @@
                         id: id
                     },
                     success: function(backData) {
-                        // console.log(backData);
+                        console.log(111);
+
+                        console.log(backData);
+                        // console.log(backData.code == 200);
+
                         if (backData.code == 200) {
                             referData();
-
                         }
                     }
                 })
             }
-
-
-
         });
     </script>
 

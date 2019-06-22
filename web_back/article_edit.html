@@ -11,9 +11,10 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <link type="text/css" rel="stylesheet" href="js/jedate/css/jedate.css">
-    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="./js/jquery-1.12.4.min.js"></script>
     <script src="js/jedate/js/jedate.js"></script>
-    <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script src="./js/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script src="./js/tinymce/js/tinymce/jquery.tinymce.min.js"></script>
     <script src="js/tinymce/js/tinymce_setup.js"></script>
 </head>
 
@@ -27,12 +28,12 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字">
+                        <input type="text" class="form-control" id="inputEmail3" value="文章标题文字" name="title">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
-                    <div class="col-sm-10">
+                    <div class="col-sm-10 fatherfather">
                         <img src="images/pic06.jpg" class="article_cover">
                         <input type="file" id="exampleInputFile">
                     </div>
@@ -40,7 +41,7 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
+                        <select class="form-control" name="type">
                             <option>类别一</option>
                             <option>类别二</option>
                             <option>类别三</option>
@@ -54,7 +55,7 @@
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" value="2019-05-17" id="dateinput">
+                            <input type="text" class="form-control" value="2019-05-17" id="dateinput" name="date">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -66,12 +67,12 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="rich_content" name="content" placeholder="文章内容" value="文章内容">
+                        <input type="text" class="form-control" id="rich_content" placeholder="文章内容" value="文章内容">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
+                        <button type="submit" class="btn btn-success xiugai">修改</button>
                     </div>
                 </div>
             </form>
@@ -81,3 +82,86 @@
 </body>
 
 </html>
+
+<script src="./js/template-web.js">
+</script>
+<script id="leibei" type="text/html">
+    {{each data}}
+    <option value={{$value.id}}>{{$value.name}}</option>
+    {{/each}}
+</script>
+
+<script>
+    // 1、页面一打开，根据id获取内容，跟服务器请求页面，把数据填到页面中
+
+    $(function() {
+        var my_id = window.location.search.split("=")[1];
+
+        $.ajax({
+            url: "http://localhost:8000/admin/search",
+            data: {
+                id: my_id
+            },
+            success: function(backData) {
+                console.log(backData);
+                for (var key in backData.data) {
+                    $("input[name=" + key + "]").val(backData.data[key])
+                }
+
+                $(".article_cover").attr("src", backData.data.cover);
+                // tinyMCE.activeEditor.setContent("111");
+            }
+        });
+
+        //2、 实现文件预览的功能
+        $("#exampleInputFile").change(function() {
+            file = this.files[0];
+            url = URL.createObjectURL(file);
+            $(".article_cover").attr("src", url);
+        });
+
+
+        // 3、文章类别功能
+        $.ajax({
+            url: "http://localhost:8000/admin/category_search",
+            success: function(backData) {
+                // console.log(backData);
+                var muban = template("leibei", backData);
+                $(".form-control").html(muban);
+            }
+        });
+
+        // 4、点击修改，跟服务器请求数据
+
+        var id1 = Number(window.location.search.split("=")[1]);
+        var content = "草稿";
+        var cover = $(".article_cover").attr("src");
+
+        $(".xiugai").click(function(e) {
+
+            e.preventDefault();
+
+            // var formData = new FormData($("form")[0]);
+            // formData.append("content", tinyMCE.activeEditor.getContent());
+            // formData.append("id", id1);
+            // formData.append('cover', $(".article_cover").attr("src"))
+
+
+            // var id1 = Number(window.location.search.split("=")[1]);
+            console.log(id1 + "," + content + "," + cover);
+
+
+            $.ajax({
+                url: "http://localhost:8000/admin/article_edit",
+                type: "post",
+                // data: formData,
+                // processData: false,
+                dataType: false,
+                data: $('form').serialize() + "&id=242&content=草稿&cover=c866d16d7ec7f7633f7f8dacd437e2a2.gif",
+                success: function(backdata) {
+                    console.log(backdata);
+                }
+            });
+        });
+    });
+</script>
